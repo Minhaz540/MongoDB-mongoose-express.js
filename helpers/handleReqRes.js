@@ -1,57 +1,58 @@
-const url = require("url");
-const { StringDecoder } = require("string_decoder");
-const routes = require("../routes");
-const {
-	notFoundHandler,
-} = require("../handlers/routesHandlers/notFoundHandler");
+// dependencies
+const url = require('url');
+const { StringDecoder } = require('string_decoder');
+const routes = require('../routes');
+const { notFoundHandler } = require('../handlers/routeHandlers/notFoundHandler');
 
+// module scaffolding
 const handler = {};
 
-// handleReqRes
 handler.handleReqRes = (req, res) => {
-	// handle url
-	const parsedUrl = url.parse(req.url, true);
-	//get path
-	const path = parsedUrl.pathname;
-	//trimmed the path with regular expressions
-	const trimmedPath = path.replace(/^\/+|\/+$/g, "");
-	const method = req.method.toLowerCase();
-	const queryStringObject = parsedUrl.query;
-	const headersObject = req.headers;
+    // request handling
+    // get the url and parse it
+    const parsedUrl = url.parse(req.url, true);
+    const path = parsedUrl.pathname;
+    const trimmedPath = path.replace(/^\/+|\/+$/g, '');
+    const method = req.method.toLowerCase();
+    const queryStringObject = parsedUrl.query;
+    const headersObject = req.headers;
 
-	const requestProperties = {
-		parsedUrl,
-		path,
-		trimmedPath,
-		method,
-		queryStringObject,
-		headersObject,
-	};
-	const decoder = new StringDecoder("utf-8");
-	let realData = "";
+    const requestProperties = {
+        parsedUrl,
+        path,
+        trimmedPath,
+        method,
+        queryStringObject,
+        headersObject,
+    };
 
-	const chosenHandler = routes[trimmedPath]
-		? routes[trimmedPath]
-		: notFoundHandler;
+    const decoder = new StringDecoder('utf-8');
+    let realData = '';
 
-	chosenHandler(requestProperties, (statusCode, payload) => {
-		statusCode = typeof statusCode === "number" ? statusCode : 500;
-		payload = typeof payload === "object" ? payload : {};
-		const payloadString = JSON.stringify(payload);
+    const chosenHandler = routes[trimmedPath] ? routes[trimmedPath] : notFoundHandler;
 
-		// returning the final response
-		res.writeHead(statusCode);
-		res.end(payloadString);
-	});
+    chosenHandler(requestProperties, (statusCode, payload) => {
+        statusCode = typeof statusCode === 'number' ? statusCode : 500;
+        payload = typeof payload === 'object' ? payload : {};
 
-	req.on("data", (buffer) => {
-		realData += decoder.write(buffer);
-	});
-	req.on("end", () => {
-		realData += decoder.end();
-		console.log(realData);
-		res.end("headersObject");
-	});
+        const payloadString = JSON.stringify(payload);
+
+        // return the final response
+        res.writeHead(statusCode);
+        res.end(payloadString);
+    });
+
+    req.on('data', (buffer) => {
+        realData += decoder.write(buffer);
+    });
+
+    req.on('end', () => {
+        realData += decoder.end();
+
+        console.log(realData);
+        // response handle
+        res.end('Hello world');
+    });
 };
 
 module.exports = handler;
