@@ -1,16 +1,16 @@
 {
-  "name": "node_js",
-  "version": "1.0.0",
-  "description": "learn about node js",
-  "main": "main.js",
-  "dependencies": {
-    "nodemon": "^2.0.12"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
-  },
-  "author": "Minhaz",
-  "license": "ISC"
+	"name": "node_js",
+	"version": "1.0.0",
+	"description": "learn about node js",
+	"main": "index.js",
+	"dependencies": {
+		"nodemon": "^2.0.12"
+	},
+	"devDependencies": {},
+	"scripts": {
+		"start": "nodemon index",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Minhaz",
+	"license": "ISC"
 }
