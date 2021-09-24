@@ -1,23 +1,18 @@
 // dependencies
-const http = require('http');
-
-// app object - module scaffolding
-const app = {};
-
-
-app.config = {
-	PORT: 8080,
-};
-const {PORT} = app.config;
-
-// create server
-app.createServer = () => {
-	const server = http.createServer();
-	server.listen(app.config.port, () => {
-		console.log(`server running ar http://localhost:${PORT}`);
-	});
-};
+const http = require("http");
+const express = require("express");
+const app = express();
 
 
-// start the server
-app.createServer();
+
+app.get('/', (req, res) => {
+	res.send("This is home page!");
+})
+
+app.post("/about", (req, res) => {
+	res.send("This is about page with a post request!");
+})
+
+app.listen(3000, () => {
+	console.log("server is running at http://localhost:3000");
+});
