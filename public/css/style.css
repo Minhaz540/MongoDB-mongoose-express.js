@@ -1,0 +1,28 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	margin: 2px 300px;
+}
+button {
+	background-color: green;
+	color: white;
+	font-size: 20px;
+	width: 160px;
+	margin: 20px 0px;
+	padding: 10px;
+	border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	-ms-border-radius: 10px;
+	-o-border-radius: 10px;
+	cursor: pointer;
+}
+/* table section */
+table {
+	width: 100%;
+}
+td, th {
+	border: 2px solid black;
+	padding: 15px;
+	font-size: 20px;
+}
