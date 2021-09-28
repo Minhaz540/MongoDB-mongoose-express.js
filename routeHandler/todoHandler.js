@@ -6,27 +6,27 @@ const Todo = new mongoose.model("Todo", todosSchema);
 
 // find data
 router.get("/", (req, res) => {
-    Todo.find({status: "inactive"}, (err,data)=>{
-        if (err) {
+	Todo.find({ status: "inactive" }, (err, data) => {
+		if (err) {
 			res.status(500).json({
 				error: "There was a server side error while showing data",
 			});
 		} else {
 			res.status(200).json({
-                result: data
+				result: data,
 			});
 		}
-    })
+	});
 });
 // find some specific data
 router.get("/specific/data", (req, res) => {
-    Todo.find({ status: "inactive" })
+	Todo.find({ status: "inactive" })
 		.select({
 			_id: 0,
 			__v: 0,
 			date: 0,
 		})
-        .limit(2)
+		.limit(2)
 		.exec((err, data) => {
 			if (err) {
 				res.status(500).json({
@@ -38,6 +38,37 @@ router.get("/specific/data", (req, res) => {
 				});
 			}
 		});
+});
+// find some specific data with instance method
+router.get("/active", async (req, res) => {
+	const todo = new Todo();
+	const data = await todo.findActive();
+	res.status(200).json({
+		data,
+	});
+});
+// find some specific data with instance method with callback
+router.get("/inactive-callback", (req, res) => {
+	const todo = new Todo();
+	todo.findInactive((err, data) => {
+		res.status(200).json({
+			data,
+		});
+	});
+});
+// find some specific data with static method
+router.get("/js", async (req, res) => {
+	const data = await Todo.findJs();
+	res.status(200).json({
+		data,
+	});
+});
+// get todos by language
+router.get("/language", async (req, res) => {
+	const data = await Todo.find().byLanguage("vanilla");
+	res.status(200).json({
+		data,
+	});
 });
 // insert single record
 router.post("/", (req, res) => {
@@ -70,43 +101,51 @@ router.post("/all", (req, res) => {
 });
 // update one data
 router.put("/:id", (req, res) => {
-    Todo.updateOne({_id: req.params.id},{
-        $set: {
-            status: "active"
-        }
-    }, (err) => {
-        if (err) {
-			res.status(500).json({
-				error: "There was a server side error while updating",
-			});
-		} else {
-			res.status(200).json({
-				message: "Data update successfully",
-			});
+	Todo.updateOne(
+		{ _id: req.params.id },
+		{
+			$set: {
+				status: "active",
+			},
+		},
+		(err) => {
+			if (err) {
+				res.status(500).json({
+					error: "There was a server side error while updating",
+				});
+			} else {
+				res.status(200).json({
+					message: "Data update successfully",
+				});
+			}
 		}
-    });
+	);
 });
 // update multiple data
 router.put("/updateAll/data", (req, res) => {
-    Todo.updateMany({status: "active"},{
-        $set: {
-            status: "inactive"
-        }
-    }, (err) => {
-        if (err) {
-			res.status(500).json({
-				error: "There was a server side error while updating many data",
-			});
-		} else {
-			res.status(200).json({
-				message: "Data update successfully",
-			});
+	Todo.updateMany(
+		{ status: "active" },
+		{
+			$set: {
+				status: "inactive",
+			},
+		},
+		(err) => {
+			if (err) {
+				res.status(500).json({
+					error: "There was a server side error while updating many data",
+				});
+			} else {
+				res.status(200).json({
+					message: "Data update successfully",
+				});
+			}
 		}
-    });
+	);
 });
 // Deleting one data
 router.delete("/:id", (req, res) => {
-    Todo.deleteOne({ _id: req.params.id}, (err) => {
+	Todo.deleteOne({ _id: req.params.id }, (err) => {
 		if (err) {
 			res.status(500).json({
 				error: "There was a server side error while deleting data",
