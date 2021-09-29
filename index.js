@@ -1,9 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const todoHandler = require("./routeHandler/todoHandler");
+const userHandler = require("./routeHandler/userHandler");
+const dotenv = require("dotenv");
 const app = express();
-app.use(express.json());
 
+app.use(express.json());
+dotenv.config();
 // connect with mongoose
 mongoose
 	.connect("mongodb://localhost/todos", {
@@ -15,13 +18,16 @@ mongoose
 
 //application routes
 app.use("/todo", todoHandler);
+app.use("/user", userHandler);
 
-function errorHandler(err, req, res, next) {
+const errorHandler = (err, req, res, next) => {
 	if (res.headersSent) {
 		return next(err);
 	}
 	res.status(500).json({ error: err });
 }
+
+app.use(errorHandler);
 
 app.listen(8080, () => {
 	console.log("Server running at http://localhost:8080");

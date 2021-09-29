@@ -3,9 +3,15 @@ const express = require("express");
 const router = express.Router();
 const todosSchema = require("../schemas/todoschemas");
 const Todo = new mongoose.model("Todo", todosSchema);
+const checkLogin = require("../middlewares/checklogin");
 
-// find data
-router.get("/", (req, res) => {
+
+// find data + (28) json web token using via this route
+router.get("/", checkLogin, (req, res) => {
+	
+	console.log(req.username);
+	console.log(req.userId);
+
 	Todo.find({ status: "inactive" }, (err, data) => {
 		if (err) {
 			res.status(500).json({
