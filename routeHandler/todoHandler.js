@@ -5,12 +5,8 @@ const todosSchema = require("../schemas/todoschemas");
 const Todo = new mongoose.model("Todo", todosSchema);
 const checkLogin = require("../middlewares/checklogin");
 
-
 // find data + (28) json web token using via this route
 router.get("/", checkLogin, (req, res) => {
-	
-	console.log(req.username);
-	console.log(req.userId);
 
 	Todo.find({ status: "inactive" }, (err, data) => {
 		if (err) {
@@ -77,19 +73,22 @@ router.get("/language", async (req, res) => {
 	});
 });
 // insert single record
-router.post("/", (req, res) => {
-	const newTodo = new Todo(req.body);
-	newTodo.save((err) => {
-		if (err) {
-			res.status(500).json({
-				error: "There was a server side error while saving",
-			});
-		} else {
-			res.status(200).json({
-				message: "Data saved successfully",
-			});
-		}
+router.post("/", checkLogin, async (req, res) => {
+	const newTodo = new Todo({
+		...req.body,
+		user: req.userId,
 	});
+	try {
+		await newTodo.save();
+		res.status(200).json({
+			message: "Data saved successfully",
+		});
+	} catch (err) {
+		console.log(err);
+		res.status(200).json({
+			message: "Data saved successfully",
+		});
+	}
 });
 // insert multiple records
 router.post("/all", (req, res) => {
@@ -163,5 +162,7 @@ router.delete("/:id", (req, res) => {
 		}
 	});
 });
+
+// create a simple server response
 
 module.exports = router;

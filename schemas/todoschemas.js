@@ -13,6 +13,12 @@ const todosSchema = mongoose.Schema({
 		type: Date,
 		default: Date.now(),
 	},
+	user: {
+		type: {
+			type: mongoose.Types.ObjectId,
+			ref: "User",
+		},
+	},
 });
 
 todosSchema.methods = {

@@ -11,11 +11,7 @@ const userSchema = mongoose.Schema({
 	password: {
 		type: String,
 		required: true,
-	},
-	status: {
-		type: String,
-		enum: ["active", "inactive"],
-	},
+	}
 });
 
 module.exports = userSchema;
