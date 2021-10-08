@@ -2,7 +2,9 @@ const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 const todosSchema = require("../schemas/todoschemas");
+const userSchema = require("../schemas/userSchema");
 const Todo = new mongoose.model("Todo", todosSchema);
+const User = new mongoose.model("User", userSchema);
 const checkLogin = require("../middlewares/checklogin");
 
 // find data + (28) json web token using via this route
@@ -22,7 +24,8 @@ router.get("/", checkLogin, (req, res) => {
 });
 // find some specific data
 router.get("/specific/data", (req, res) => {
-	Todo.find({ status: "inactive" })
+	Todo.find({}) // status: "inactive"
+		.populate("user", "name username -_id")
 		.select({
 			_id: 0,
 			__v: 0,
@@ -79,14 +82,21 @@ router.post("/", checkLogin, async (req, res) => {
 		user: req.userId,
 	});
 	try {
-		await newTodo.save();
+		const todo = await newTodo.save();
+		await User.updateOne({
+			_id: req.userId,
+		}, {
+			$push: {
+				todos: todo._id,
+			}
+		});
 		res.status(200).json({
 			message: "Data saved successfully",
 		});
 	} catch (err) {
 		console.log(err);
-		res.status(200).json({
-			message: "Data saved successfully",
+		res.status(500).json({
+			message: "Data saved failed",
 		});
 	}
 });

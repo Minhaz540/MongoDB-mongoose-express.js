@@ -10,7 +10,7 @@ const checkLogin = (req, res, next) => {
         next();
     } catch (err) {
         console.log(err);
-        next("Authentication full failed");
+        next("Authentication failed");
     }
 }
 
